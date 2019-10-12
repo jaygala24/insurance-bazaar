@@ -19,13 +19,16 @@
   "author": "Jay Gala",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "mysql2": "^1.7.0",
-    "rimraf": "^3.0.0"
+    "rimraf": "^3.0.0",
+    "validator": "^11.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
