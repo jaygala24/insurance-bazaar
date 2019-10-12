@@ -3,6 +3,7 @@ import { urlencoded, json } from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import db from './config/db';
+import apiRoutes from './routes/index';
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.get('/', (req, res) => {
     },
   });
 });
+
+app.use('/api', apiRoutes);
 
 app.get('/test', async (req, res) => {
   const sql = `CREATE DATABASE mydb`;
