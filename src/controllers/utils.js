@@ -39,31 +39,33 @@ export const cmpPassword = (plainPassword, hashPassword) => {
   });
 };
 
+// user auth middleware
 export const protect = async (req, res, next) => {
   const bearer = req.headers.authorization;
 
   if (!bearer || !bearer.startsWith('Bearer ')) {
-    return res.status(401).json({
-      data: { success: false },
-      errors: {
-        authorization: 'Access token required',
-      },
-    });
+    return res
+      .status(401)
+      .json({ msg: 'No token, authorization denied' });
   }
+  let payload;
 
   try {
-    const token = bearer.split('Bearer ')[1].trim();
-    const payload = await verifyToken(token);
-    const sql = `SELECT cust_id as _id, name, email, phone_no, address, DATE_FORMAT(dob,'%Y-%m-%d') as dob, password FROM customer WHERE cust_id=${payload.id}`;
+    try {
+      const token = bearer.split('Bearer ')[1].trim();
+      payload = await verifyToken(token);
+    } catch (err) {
+      res.status(401).json({ msg: 'Token is not valid' });
+    }
+    const sql = `SELECT cust_id as _id, name, email, phone_no, address, DATE_FORMAT(dob,'%Y-%m-%d') as dob FROM customer WHERE cust_id=${payload.id}`;
     const [rows, fields] = await db.execute(sql);
     const user = rows[0];
-    user.password = null;
     if (!user) {
-      return next(err);
+      return res.status(401).json({ msg: 'Token is not valid' });
     }
     req.user = user;
     next();
   } catch (err) {
-    return next(err);
+    return res.status(500).json({ msg: 'Server Error' });
   }
 };
